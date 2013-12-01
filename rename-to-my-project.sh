@@ -8,15 +8,13 @@
 
 EXPECTED_ARGS=1
 
-if [ $# -ne $EXPECTED_ARGS ]
-then
-  echo "Usage: `basename $0` harbour-my-cool-app-name"
+if [[ $# -ne $EXPECTED_ARGS ]]; then
+  echo "Usage: $(basename $0) harbour-my-cool-app-name"
   exit
 fi
 
 newname=$1
-if [[ $newname != harbour-* ]]
-then
+if [[ $newname != harbour-* ]]; then
   echo Your new app name MUST start with \"harbour-\"
   exit
 fi
@@ -30,11 +28,9 @@ for fl in $(find .  -name .git -prune -o -type f -name 'harbour-helloworld-pro-s
 done
 
 # Then do substitutions
-for fl in `find . -name .git -prune -o -type f -print | xargs file | grep ASCII | cut -d: -f1`
-do
+for fl in $(find . -name .git -prune -o -type f -print | xargs file | grep ASCII | cut -d: -f1); do
     # Ignore this particular file and everything inside .git dir
-    if [[ "$fl" =~ "rename-to-my-project.sh" ]]
-    then
+    if [[ "$fl" =~ "rename-to-my-project.sh" ]]; then
         continue
     fi
     if sed -i "s/harbour-helloworld-pro-sailfish/$newname/g" $fl; then
