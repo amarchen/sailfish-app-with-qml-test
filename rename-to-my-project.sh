@@ -23,6 +23,13 @@ fi
 
 echo Replacing "harbour-helloworld-pro-sailfish" with "$newname"
 # iterating over all files except for the binary ones
+# First rename files
+for fl in $(find .  -name .git -prune -o -type f -name 'harbour-helloworld-pro-sailfish*' -print); do
+    echo Updating to ${fl/harbour-helloworld-pro-sailfish/$newname}
+    mv $fl ${fl/harbour-helloworld-pro-sailfish/$newname}
+done
+
+# Then do substitutions
 for fl in `find . -name .git -prune -o -type f -print | xargs file | grep ASCII | cut -d: -f1`
 do
     # Ignore this particular file and everything inside .git dir
@@ -30,10 +37,8 @@ do
     then
         continue
     fi
-    echo Checking $fl
-    futurefl=${fl//harbour-helloworld-pro-sailfish/$newname}
-    mv $fl $fl.old
-    sed "s/harbour-helloworld-pro-sailfish/$newname/g" $fl.old > $futurefl
-    rm -f $fl.old
+    if sed -i "s/harbour-helloworld-pro-sailfish/$newname/g" $fl; then
+	echo Updated $fl
+    fi
 done
 echo Done. Enjoy your $newname app!
